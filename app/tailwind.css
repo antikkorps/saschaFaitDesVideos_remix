@@ -10,3 +10,17 @@ body {
     color-scheme: dark;
   }
 }
+
+:root {
+  --color-primary: #1e40af; /* Exemple : bleu */
+  --color-secondary: #9333ea; /* Exemple : violet */
+  --color-accent: #f59e0b; /* Exemple : jaune */
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #0ea5e9; /* Exemple : bleu clair */
+    --color-secondary: #7e22ce; /* Exemple : violet foncé */
+    --color-accent: #d97706; /* Exemple : orange */
+  }
+}
