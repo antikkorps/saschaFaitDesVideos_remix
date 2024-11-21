@@ -35,7 +35,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           {children}
           <ScrollRestoration />
           <Scripts />
-          <div className="absolute bottom-2 right-2">
+          <div className="fixed bottom-2 right-2">
             <ThemeToggle />
           </div>
         </body>
