@@ -12,9 +12,9 @@ body {
 }
 
 :root {
-  --color-primary: #bfecff;
-  --color-secondary: #cdc1ff;
-  --color-accent: #fff6e3;
+  --color-primary: #f9f7f7;
+  --color-secondary: #dbe2ef;
+  --color-accent: #112d4e;
 }
 
 @media (prefers-color-scheme: dark) {
