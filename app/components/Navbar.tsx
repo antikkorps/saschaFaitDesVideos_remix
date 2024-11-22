@@ -1,11 +1,11 @@
-import { Play } from "lucide-react";
-import { useState } from "react";
-import { Link, useLocation } from "@remix-run/react";
+import { Link, useLocation } from "@remix-run/react"
+import { Play } from "lucide-react"
+import { useState } from "react"
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const location = useLocation();
-  const activeItem = location.pathname;
+  const [isOpen, setIsOpen] = useState(false)
+  const location = useLocation()
+  const activeItem = location.pathname
 
   const menuItems = [
     { title: "Portfolio", href: "/portfolio" },
@@ -13,7 +13,7 @@ const Navbar = () => {
     { title: "Services", href: "/services" },
     { title: "À propos", href: "/about" },
     { title: "Contact", href: "/contact" },
-  ];
+  ]
 
   return (
     <>
@@ -96,7 +96,7 @@ const Navbar = () => {
 
           {/* Contact Info */}
           <div className="absolute bottom-16 text-center">
-            <Link 
+            <Link
               to="/contact"
               onClick={() => setIsOpen(false)}
               className="px-8 py-3 text-sm text-white border border-white/20 hover:bg-white hover:text-neutral-900 transition-colors duration-300"
@@ -111,7 +111,7 @@ const Navbar = () => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
