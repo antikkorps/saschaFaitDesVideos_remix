@@ -1,5 +1,6 @@
 import type { MetaFunction } from "@remix-run/node"
 import Hero from "~/components/Hero"
+import SectionVideoCard from "~/components/SectionVideoCard"
 
 export const meta: MetaFunction = () => {
   return [
@@ -12,6 +13,8 @@ export default function Index() {
   return (
     <>
       <Hero />
+
+      <SectionVideoCard />
     </>
   )
 }
