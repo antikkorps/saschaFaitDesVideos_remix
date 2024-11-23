@@ -73,9 +73,21 @@ module.exports = {
           "0%": { transform: "translateX(200%) skewX(-45deg)" },
           "100%": { transform: "translateX(-100%) skewX(-45deg)" },
         },
+        "shine-delayed": {
+          "0%": { transform: "translateX(-100%) skewX(-45deg)" },
+          "30%": { transform: "translateX(-100%) skewX(-45deg)" },
+          "100%": { transform: "translateX(200%) skewX(-45deg)" },
+        },
+        "shine-reverse-delayed": {
+          "0%": { transform: "translateX(200%) skewX(-45deg)" },
+          "30%": { transform: "translateX(200%) skewX(-45deg)" },
+          "100%": { transform: "translateX(-100%) skewX(-45deg)" },
+        },
         animation: {
-          shine: "shine 0,6s ease-in-out",
-          "shine-reverse": "shine-reverse 0,6s ease-in-out",
+          shine: "shine 1.5s ease-in-out",
+          "shine-reverse": "shine-reverse 1s ease-in-out",
+          "shine-delayed": "shine-delayed 1.5s ease-in-out",
+          "shine-reverse-delayed": "shine-reverse-delayed 1s ease-in-out",
         },
         "accordion-down": {
           from: {
