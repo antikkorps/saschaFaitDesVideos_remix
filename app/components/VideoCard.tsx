@@ -26,6 +26,11 @@ export const VideoCard = ({ className = "", ...props }: VideoCardProps) => {
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
       >
+        {/* Effet de reflet */}
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-[45deg] translate-x-[-100%] group-hover:animate-[shine_1.5s_ease-in-out] group-hover:[animation-fill-mode:forwards] group-[:not(:hover)]:animate-[shine-reverse_1s_ease-in-out] group-[:not(:hover)]:[animation-fill-mode:forwards]" />
+        </div>
+
         {/* Thumbnail et overlay */}
         <motion.div layoutId={`image-container-${props.id}`} className="absolute inset-0">
           <motion.img
@@ -69,7 +74,7 @@ export const VideoCard = ({ className = "", ...props }: VideoCardProps) => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50"
+              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 cursor-pointer"
             />
 
             {/* Modal */}
@@ -118,42 +123,18 @@ export const VideoCard = ({ className = "", ...props }: VideoCardProps) => {
 
                   {/* Section contenu */}
                   <motion.div layoutId={`content-${props.id}`} className="p-6">
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <motion.h2
-                          layoutId={`title-${props.id}`}
-                          className="text-2xl font-bold text-white"
-                        >
-                          {props.title}
-                        </motion.h2>
-                        <motion.div
-                          layoutId={`meta-${props.id}`}
-                          className="mt-1 text-sm text-white/80"
-                        >
-                          {props.duration} • {props.views.toLocaleString()} vues
-                        </motion.div>
-                      </div>
-
-                      <button
-                        onClick={() => setIsOpen(false)}
-                        className="bg-white/10 p-2 rounded-full hover:bg-white/20 transition-colors"
-                        aria-label="Fermer"
-                      >
-                        <svg
-                          className="w-6 h-6 text-white"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M6 18L18 6M6 6l12 12"
-                          />
-                        </svg>
-                      </button>
-                    </div>
+                    <motion.h2
+                      layoutId={`title-${props.id}`}
+                      className="text-2xl font-bold text-white"
+                    >
+                      {props.title}
+                    </motion.h2>
+                    <motion.div
+                      layoutId={`meta-${props.id}`}
+                      className="mt-1 text-sm text-white/80"
+                    >
+                      {props.duration} • {props.views.toLocaleString()} vues
+                    </motion.div>
 
                     {/* Nouveau contenu avec animation */}
                     <motion.div
@@ -169,6 +150,27 @@ export const VideoCard = ({ className = "", ...props }: VideoCardProps) => {
                       </div>
                       <p className="text-white/90 leading-relaxed">{props.description}</p>
                     </motion.div>
+
+                    {/* Bouton fermer */}
+                    <button
+                      onClick={() => setIsOpen(false)}
+                      className="absolute top-6 right-6 bg-white/10 p-2 rounded-full hover:bg-white/20 transition-colors"
+                      aria-label="Fermer"
+                    >
+                      <svg
+                        className="w-6 h-6 text-white"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
+                    </button>
                   </motion.div>
                 </div>
               </motion.div>
@@ -179,3 +181,5 @@ export const VideoCard = ({ className = "", ...props }: VideoCardProps) => {
     </>
   )
 }
+
+export default VideoCard
