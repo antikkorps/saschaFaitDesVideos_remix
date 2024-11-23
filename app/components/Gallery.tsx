@@ -3,7 +3,7 @@ const demoVideos: Video[] = [
   {
     id: "1",
     title: "Event Happiness Crossfit 2024",
-    thumbnailUrl: "/public/thumbnails/Happiness_Crossfit_Le_Mans_20.webp",
+    thumbnailUrl: "/thumbnails/Happiness_Crossfit_Le_Mans_20.webp",
     description:
       "Event Happiness Crossfit 2024... Le but était de proposer une vidéo dynamique et motivante pour promouvoir l'événement.",
     date: "Octobre 2024",
@@ -15,7 +15,7 @@ const demoVideos: Video[] = [
   {
     id: "2",
     title: "Le reveil des garennes 2024",
-    thumbnailUrl: "/public/thumbnails/le_reveil_des_garennes_2024.png",
+    thumbnailUrl: "/thumbnails/le_reveil_des_garennes_2024.png",
     description:
       "Suivi du festival pour permettre aux spectateurs de revivre les moments forts de l'événement...",
     date: "Juillet 2024",
@@ -26,7 +26,7 @@ const demoVideos: Video[] = [
   {
     id: "3",
     title: "Le reveil des garennes 2023",
-    thumbnailUrl: "/public/thumbnails/le_reveil_desgarennes_2023.jpg",
+    thumbnailUrl: "/thumbnails/le_reveil_desgarennes_2023.jpg",
     description:
       "Suivi du festival pour permettre aux spectateurs de revivre les moments forts de l'événement...",
     date: "Juillet 2023",
@@ -37,7 +37,7 @@ const demoVideos: Video[] = [
   {
     id: "4",
     title: "Sweet barre à terre par Delphine Letort",
-    thumbnailUrl: "/public/thumbnails/delphineletort.webp",
+    thumbnailUrl: "/thumbnails/delphineletort.webp",
     description: "Film retraçant le stage de barre à terre de Delphine Letort...",
     date: "Juin 2023",
     duration: "1:30",
