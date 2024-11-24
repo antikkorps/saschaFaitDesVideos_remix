@@ -14,7 +14,7 @@ const demoVideos: Video[] = [
   },
   {
     id: "2",
-    title: "Le reveil des garennes 2024",
+    title: "Les garennes 2024",
     thumbnailUrl: "/thumbnails/le_reveil_des_garennes_2024.png",
     description:
       "Suivi du festival pour permettre aux spectateurs de revivre les moments forts de l'événement...",

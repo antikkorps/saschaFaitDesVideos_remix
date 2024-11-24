@@ -9,21 +9,29 @@ const PhotoGallery = () => {
     offset: ["start end", "end start"],
   })
 
-  // Gestion responsive du parallax
   useEffect(() => {
     const checkIsDesktop = () => {
       setIsDesktop(window.innerWidth >= 1024)
     }
-
-    // Check initial
     checkIsDesktop()
-
-    // Listener pour les changements de taille d'écran
     window.addEventListener("resize", checkIsDesktop)
-
-    // Cleanup
     return () => window.removeEventListener("resize", checkIsDesktop)
   }, [])
+
+  const titleVariants = {
+    hidden: {
+      opacity: 0,
+      y: 20,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.6, -0.05, 0.01, 0.99], // Custom easing pour un effet plus naturel
+      },
+    },
+  }
 
   // Parallax uniquement pour desktop
   const yOffset1 = useTransform(scrollYProgress, [0, 0.5, 1], [0, 40, 80])
@@ -40,6 +48,7 @@ const PhotoGallery = () => {
     visible: {
       opacity: 1,
       transition: {
+        delayChildren: 0.2, // Délai avant l'animation de la grille
         staggerChildren: 0.1,
       },
     },
@@ -116,6 +125,13 @@ const PhotoGallery = () => {
         viewport={{ once: false, amount: 0.1 }}
         className="max-w-7xl mx-auto"
       >
+        <motion.h1
+          variants={titleVariants}
+          className="text-4xl font-bold text-gray-900 dark:text-white mb-12"
+        >
+          Mes Photos
+        </motion.h1>
+
         <div className="grid auto-rows-[minmax(200px,auto)] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-12 lg:gap-16">
           {photos.map((photo, index) => (
             <motion.div
