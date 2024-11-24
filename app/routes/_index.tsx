@@ -1,6 +1,7 @@
 import type { MetaFunction } from "@remix-run/node"
 import Gallery from "~/components/Gallery"
 import Hero from "~/components/Hero"
+import PhotoGallery from "~/components/PhotoGallery"
 
 export const meta: MetaFunction = () => {
   return [
@@ -15,6 +16,8 @@ export default function Index() {
       <Hero />
 
       <Gallery />
+
+      <PhotoGallery />
     </>
   )
 }
