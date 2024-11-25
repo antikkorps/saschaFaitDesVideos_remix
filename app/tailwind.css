@@ -84,3 +84,51 @@ dialog:focus {
 .text-shadow-lg {
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
+
+/* SCROLLER */
+.parallax {
+  overflow: hidden;
+  margin: 0;
+  padding: 0.25rem 0;
+  white-space: nowrap;
+}
+
+.scroller {
+  font-family: "Notable", sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex-wrap: nowrap;
+  display: flex;
+  color: white;
+  -webkit-font-smoothing: antialiased;
+  font-size: clamp(2rem, 8vw, 6rem);
+  line-height: 1;
+}
+
+.scroller span {
+  display: inline-block;
+  margin-right: clamp(0.5rem, 2vw, 2rem);
+}
+
+/* Tablettes */
+@media (min-width: 768px) {
+  .parallax {
+    padding: 0.5rem 0;
+  }
+
+  .scroller {
+    font-size: clamp(4rem, 10vw, 8rem);
+  }
+
+  .scroller span {
+    margin-right: 2rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .scroller {
+    font-size: clamp(5rem, 12vw, 9rem);
+  }
+}

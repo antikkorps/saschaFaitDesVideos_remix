@@ -1,54 +1,28 @@
-import { motion, useScroll, useTransform } from "framer-motion"
-import { useEffect, useRef, useState } from "react"
+import { AnimatePresence, motion, useScroll } from "framer-motion"
+import { ChevronLeft, ChevronRight, X } from "lucide-react"
+import { useRef, useState } from "react"
+
+type Photo = {
+  id: number
+  src: string
+  alt: string
+  orientation: "landscape" | "portrait"
+}
 
 const PhotoGallery = () => {
-  const [isDesktop, setIsDesktop] = useState(false)
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null)
   const galleryRef = useRef(null)
+
   const { scrollYProgress } = useScroll({
     target: galleryRef,
     offset: ["start end", "end start"],
   })
-
-  useEffect(() => {
-    const checkIsDesktop = () => {
-      setIsDesktop(window.innerWidth >= 1024)
-    }
-    checkIsDesktop()
-    window.addEventListener("resize", checkIsDesktop)
-    return () => window.removeEventListener("resize", checkIsDesktop)
-  }, [])
-
-  const titleVariants = {
-    hidden: {
-      opacity: 0,
-      y: 20,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.6,
-        ease: [0.6, -0.05, 0.01, 0.99], // Custom easing pour un effet plus naturel
-      },
-    },
-  }
-
-  // Parallax uniquement pour desktop
-  const yOffset1 = useTransform(scrollYProgress, [0, 0.5, 1], [0, 40, 80])
-  const yOffset2 = useTransform(scrollYProgress, [0, 0.5, 1], [0, -30, -60])
-  const yOffset3 = useTransform(scrollYProgress, [0.1, 0.6, 1], [0, 50, 100])
-  const yOffset4 = useTransform(scrollYProgress, [0.2, 0.7, 1], [0, -40, -80])
-  const yOffset5 = useTransform(scrollYProgress, [0.3, 0.8, 1], [0, 30, 60])
-  const yOffset6 = useTransform(scrollYProgress, [0.4, 0.9, 1], [0, -50, -100])
-
-  const yOffsets = [yOffset1, yOffset2, yOffset3, yOffset4, yOffset5, yOffset6]
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        delayChildren: 0.2, // Délai avant l'animation de la grille
         staggerChildren: 0.1,
       },
     },
@@ -57,124 +31,197 @@ const PhotoGallery = () => {
   const imageVariants = {
     hidden: {
       opacity: 0,
-      y: 50,
+      scale: 0.8,
     },
     visible: {
       opacity: 1,
-      y: 0,
+      scale: 1,
       transition: {
-        duration: 0.5,
+        duration: 0.4,
         ease: "easeOut",
       },
     },
   }
 
-  const photos = [
+  const photos: Photo[] = [
     {
       id: 1,
-      src: "/api/placeholder/600/400",
-      alt: "Projet photo 1",
+      src: `/api/placeholder/800/600`,
+      alt: "Photo 1",
       orientation: "landscape",
     },
     {
       id: 2,
-      src: "/api/placeholder/400/600",
-      alt: "Projet photo 2",
+      src: `/api/placeholder/800/1000`,
+      alt: "Photo 2",
       orientation: "portrait",
     },
     {
       id: 3,
-      src: "/api/placeholder/600/400",
-      alt: "Projet photo 3",
+      src: `/api/placeholder/800/600`,
+      alt: "Photo 3",
       orientation: "landscape",
     },
     {
       id: 4,
-      src: "/api/placeholder/400/600",
-      alt: "Projet photo 4",
+      src: `/api/placeholder/800/1000`,
+      alt: "Photo 4",
       orientation: "portrait",
     },
     {
       id: 5,
-      src: "/api/placeholder/600/400",
-      alt: "Projet photo 5",
+      src: `/api/placeholder/800/600`,
+      alt: "Photo 5",
       orientation: "landscape",
     },
     {
       id: 6,
-      src: "/api/placeholder/400/600",
-      alt: "Projet photo 6",
+      src: `/api/placeholder/800/1000`,
+      alt: "Photo 6",
       orientation: "portrait",
     },
   ]
 
+  const navigatePhoto = (direction: "prev" | "next") => {
+    if (!selectedPhoto) return
+
+    const currentIndex = photos.findIndex((photo) => photo.id === selectedPhoto.id)
+    let newIndex: number
+
+    if (direction === "next") {
+      newIndex = currentIndex + 1 >= photos.length ? 0 : currentIndex + 1
+    } else {
+      newIndex = currentIndex - 1 < 0 ? photos.length - 1 : currentIndex - 1
+    }
+
+    setSelectedPhoto(photos[newIndex])
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    e.stopPropagation()
+    switch (e.key) {
+      case "ArrowLeft":
+        navigatePhoto("prev")
+        break
+      case "ArrowRight":
+        navigatePhoto("next")
+        break
+      case "Escape":
+        setSelectedPhoto(null)
+        break
+    }
+  }
+
+  const Modal = ({ photo }: { photo: Photo }) => (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+      onClick={() => setSelectedPhoto(null)}
+      onKeyDown={handleKeyDown}
+      tabIndex={0}
+    >
+      <button
+        className="absolute top-4 right-4 p-2 text-white hover:text-gray-300 
+                   bg-black/20 rounded-full transition-colors"
+        onClick={(e) => {
+          e.stopPropagation()
+          setSelectedPhoto(null)
+        }}
+      >
+        <X size={24} />
+      </button>
+
+      <button
+        className="absolute left-4 p-2 text-white hover:text-gray-300 
+                   bg-black/20 rounded-full transition-colors"
+        onClick={(e) => {
+          e.stopPropagation()
+          navigatePhoto("prev")
+        }}
+      >
+        <ChevronLeft size={24} />
+      </button>
+
+      <button
+        className="absolute right-4 p-2 text-white hover:text-gray-300 
+                   bg-black/20 rounded-full transition-colors"
+        onClick={(e) => {
+          e.stopPropagation()
+          navigatePhoto("next")
+        }}
+      >
+        <ChevronRight size={24} />
+      </button>
+
+      <motion.img
+        src={photo.src}
+        alt={photo.alt}
+        className="max-h-[90vh] max-w-[90vw] object-contain"
+        layoutId={`photo-${photo.id}`}
+      />
+
+      <div
+        className="absolute bottom-4 left-1/2 -translate-x-1/2 
+                    text-white bg-black/20 px-4 py-2 rounded-full"
+      >
+        {photo.alt}
+      </div>
+    </motion.div>
+  )
+
   return (
     <div
-      className="relative min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4 transition-colors duration-300"
+      className="min-h-screen bg-gray-100 dark:bg-gray-900 py-8 px-4 transition-colors duration-300"
       ref={galleryRef}
     >
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-blue-500 dark:bg-blue-400 origin-left z-50"
+        className="fixed top-0 left-0 right-0 h-1 bg-blue-500 dark:bg-blue-400 origin-left z-40"
         style={{ scaleX: scrollYProgress }}
       />
 
       <motion.div
         variants={containerVariants}
         initial="hidden"
-        whileInView="visible"
-        viewport={{ once: false, amount: 0.1 }}
+        animate="visible"
         className="max-w-7xl mx-auto"
       >
-        <motion.h1
-          variants={titleVariants}
-          className="text-4xl font-bold text-gray-900 dark:text-white mb-12"
-        >
-          Mes Photos
-        </motion.h1>
-
-        <div className="grid auto-rows-[minmax(200px,auto)] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-12 lg:gap-16">
-          {photos.map((photo, index) => (
+        <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-4 space-y-4">
+          {photos.map((photo) => (
             <motion.div
               key={photo.id}
               variants={imageVariants}
-              style={{
-                y: isDesktop ? yOffsets[index] : 0,
-              }}
-              className={`
-                group relative overflow-hidden rounded-lg shadow-lg 
-                bg-white dark:bg-gray-800 
-                transition-colors duration-300
-                ${photo.orientation === "portrait" ? "sm:row-span-2" : ""}
-                transform-gpu
-                motion-reduce:transform-none
-              `}
+              layoutId={`photo-${photo.id}`}
+              className="break-inside-avoid"
             >
               <motion.div
-                whileHover={{ scale: 1.05 }}
-                className={`
-                  relative overflow-hidden
-                  ${photo.orientation === "portrait" ? "aspect-[3/4]" : "aspect-video"}
-                `}
+                whileHover={{ scale: 1.02 }}
+                className="relative overflow-hidden rounded-lg bg-white dark:bg-gray-800 
+                         shadow-md hover:shadow-xl transition-all duration-300"
               >
-                <img
-                  src={photo.src}
-                  alt={photo.alt}
-                  className="w-full h-full object-cover transition-transform duration-300"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300">
-                  <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4">
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="px-6 py-2 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-full font-medium mb-2
-                               shadow-lg hover:shadow-xl transition-shadow duration-300"
+                <div className="relative">
+                  <motion.img
+                    src={photo.src}
+                    alt={photo.alt}
+                    loading="lazy"
+                    className="w-full h-auto"
+                    onClick={() => setSelectedPhoto(photo)}
+                  />
+                  <div
+                    className="absolute inset-0 bg-black/0 hover:bg-black/30 
+                                transition-all duration-300 flex items-center justify-center 
+                                opacity-0 hover:opacity-100"
+                  >
+                    <button
+                      className="px-4 py-2 bg-white/90 dark:bg-gray-800/90 
+                               text-gray-900 dark:text-white rounded-lg 
+                               transform -translate-y-2 hover:translate-y-0 
+                               transition-all duration-300"
+                      onClick={() => setSelectedPhoto(photo)}
                     >
-                      Voir le projet
-                    </motion.button>
-                    <p className="text-white text-sm text-center mt-2 max-w-xs line-clamp-2">
-                      {photo.alt}
-                    </p>
+                      Voir en grand
+                    </button>
                   </div>
                 </div>
               </motion.div>
@@ -182,6 +229,10 @@ const PhotoGallery = () => {
           ))}
         </div>
       </motion.div>
+
+      <AnimatePresence>
+        {selectedPhoto && <Modal photo={selectedPhoto} />}
+      </AnimatePresence>
     </div>
   )
 }
