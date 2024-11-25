@@ -132,3 +132,34 @@ dialog:focus {
     font-size: clamp(5rem, 12vw, 9rem);
   }
 }
+
+/* GALLERY */
+@layer utilities {
+  /* Optimisation des animations pour les appareils qui préfèrent moins de mouvement */
+  @media (prefers-reduced-motion) {
+    .gallery-item {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  /* Amélioration des performances sur mobile */
+  @media (max-width: 768px) {
+    .gallery-item {
+      will-change: transform, opacity;
+      transform: translateZ(0);
+    }
+  }
+}
+
+/* Animation de chargement progressive des images */
+@keyframes imageReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
