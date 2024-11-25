@@ -73,7 +73,7 @@ export default function App() {
   return (
     <section className="flex flex-col -space-y-4 sm:-space-y-6 md:-space-y-8 lg:-space-y-10 py-0">
       <ParallaxText baseVelocity={-5}>Sascha fait des vidéos</ParallaxText>
-      <ParallaxText baseVelocity={5}>Et de très belles photos</ParallaxText>
+      <ParallaxText baseVelocity={5}>Et de belles photos</ParallaxText>
     </section>
   )
 }
