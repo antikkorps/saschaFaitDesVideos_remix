@@ -1,4 +1,7 @@
+import { motion, useScroll, useTransform } from "framer-motion"
+import { useRef } from "react"
 import { BentoGrid, Video } from "./BentoGrid"
+
 const demoVideos: Video[] = [
   {
     id: "1",
@@ -67,12 +70,35 @@ const demoVideos: Video[] = [
 ]
 
 export default function Gallery() {
+  const titleRef = useRef<HTMLDivElement>(null)
+
+  const { scrollYProgress: titleScrollProgress } = useScroll({
+    target: titleRef,
+    offset: ["start end", "end start"],
+  })
+
+  const titleOpacity = useTransform(titleScrollProgress, [0, 0.2, 0.4, 0.6], [0, 1, 1, 0])
+
+  const titleY = useTransform(titleScrollProgress, [0, 0.2, 0.4, 0.6], [100, 0, 0, -100])
+
   return (
-    <div className="min-h-screen bg-orange-100 dark:bg-neutral-900 py-12">
-      <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">
-          Mes Projets
-        </h1>
+    <div className="min-h-screen bg-orange-100 dark:bg-neutral-900">
+      {/* Espace pour permettre le scroll */}
+      <div className="w-full h-[6vh]" />
+
+      <div ref={titleRef} className="w-full h-[20vh] flex items-center justify-center">
+        <motion.h2
+          className="text-4xl md:text-6xl lg:text-8xl font-bold text-center"
+          style={{
+            opacity: titleOpacity,
+            y: titleY,
+          }}
+        >
+          Mes Projets Vidéos
+        </motion.h2>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:my-10 pb-12">
         <BentoGrid videos={demoVideos} />
       </div>
     </div>

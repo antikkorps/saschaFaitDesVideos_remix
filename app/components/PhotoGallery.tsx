@@ -6,7 +6,7 @@ import {
   useTransform,
 } from "framer-motion"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
-import React, { useCallback, useRef, useState } from "react"
+import React, { useCallback, useEffect, useRef, useState } from "react"
 
 interface GalleryImage {
   src: string
@@ -14,15 +14,49 @@ interface GalleryImage {
   category: string
 }
 
+const buttonBaseStyle = `
+  absolute z-10 p-3 rounded-full 
+  bg-black/40 backdrop-blur-sm
+  text-white
+  transition-colors duration-200
+  focus:outline-none focus:ring-2 focus:ring-white/50
+  hover:bg-white/20
+`
+
 const PhotoGallery = () => {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
   const [selectedIndex, setSelectedIndex] = useState<number>(-1)
   const containerRef = useRef<HTMLDivElement>(null)
+  const titleRef = useRef<HTMLDivElement>(null)
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   })
+
+  const { scrollYProgress: titleScrollProgress } = useScroll({
+    target: titleRef,
+    offset: ["start center", "center center"],
+  })
+
+  const titleOpacity = useTransform(titleScrollProgress, [0, 0.5], [0, 1])
+  const titleY = useTransform(titleScrollProgress, [0, 0.5], [100, 0])
+
+  useEffect(() => {
+    if (selectedImage) {
+      const scrollY = window.scrollY
+      document.body.style.position = "fixed"
+      document.body.style.top = `-${scrollY}px`
+      document.body.style.width = "100%"
+
+      return () => {
+        document.body.style.position = ""
+        document.body.style.top = ""
+        document.body.style.width = ""
+        window.scrollTo(0, scrollY)
+      }
+    }
+  }, [selectedImage])
 
   const images: GalleryImage[] = [
     { src: "/photos/concert_01.webp", alt: "Concert 1", category: "Concert" },
@@ -41,10 +75,18 @@ const PhotoGallery = () => {
   return (
     <>
       <div ref={containerRef} className="w-full min-h-screen">
-        {/* Div d'espacement pour retarder l'animation */}
-        <div className="w-full h-[40vh]" />
+        <div ref={titleRef} className="w-full h-[40vh] flex items-center justify-center">
+          <motion.h2
+            className="text-4xl md:text-6xl lg:text-8xl font-bold text-center"
+            style={{
+              opacity: titleOpacity,
+              y: titleY,
+            }}
+          >
+            Mes photos
+          </motion.h2>
+        </div>
 
-        {/* Container des photos avec padding ajusté */}
         <div className="w-full px-4 pb-16">
           <div className="max-w-7xl mx-auto">
             {images.map((image, index) => (
@@ -173,6 +215,20 @@ const Modal = ({ image, images, currentIndex, onClose, onNavigate }: ModalProps)
     [currentIndex, images, onClose, onNavigate]
   )
 
+  const handlePrevious = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (currentIndex > 0) {
+      onNavigate(images[currentIndex - 1], currentIndex - 1)
+    }
+  }
+
+  const handleNext = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (currentIndex < images.length - 1) {
+      onNavigate(images[currentIndex + 1], currentIndex + 1)
+    }
+  }
+
   React.useEffect(() => {
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
@@ -194,21 +250,19 @@ const Modal = ({ image, images, currentIndex, onClose, onNavigate }: ModalProps)
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          onClick={onClose}
-          className="absolute top-4 right-4 z-10 p-2 rounded-full bg-black/50 text-white 
-                     hover:bg-black/70 transition-colors duration-200"
+          onClick={(e) => {
+            e.stopPropagation()
+            onClose()
+          }}
+          className={`${buttonBaseStyle} top-4 right-4`}
         >
           <X size={24} />
         </button>
 
         {currentIndex > 0 && (
           <button
-            onClick={(e) => {
-              e.stopPropagation()
-              onNavigate(images[currentIndex - 1], currentIndex - 1)
-            }}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white 
-                       hover:bg-black/70 transition-colors duration-200"
+            onClick={handlePrevious}
+            className={`${buttonBaseStyle} left-4 top-1/2 -translate-y-1/2`}
           >
             <ChevronLeft size={24} />
           </button>
@@ -216,19 +270,19 @@ const Modal = ({ image, images, currentIndex, onClose, onNavigate }: ModalProps)
 
         {currentIndex < images.length - 1 && (
           <button
-            onClick={(e) => {
-              e.stopPropagation()
-              onNavigate(images[currentIndex + 1], currentIndex + 1)
-            }}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white 
-                       hover:bg-black/70 transition-colors duration-200"
+            onClick={handleNext}
+            className={`${buttonBaseStyle} right-4 top-1/2 -translate-y-1/2`}
           >
             <ChevronRight size={24} />
           </button>
         )}
 
         <div className="w-full h-full flex items-center justify-center bg-black/20">
-          <img
+          <motion.img
+            key={currentIndex}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
             src={image.src}
             alt={image.alt}
             className="w-full h-full object-contain contrast-[1.02] saturate-[1.05]"

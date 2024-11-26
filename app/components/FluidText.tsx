@@ -60,7 +60,7 @@ function ParallaxText({ children, baseVelocity = 100 }: ParallaxProps) {
     <div className="parallax">
       <motion.div className="scroller" style={{ x }}>
         {Array.from({ length: repetitions }).map((_, i) => (
-          <span key={i} className="inline-block">
+          <span key={i} className="inline-block text-red-900 dark:text-white py-4">
             {children}
           </span>
         ))}
@@ -71,7 +71,7 @@ function ParallaxText({ children, baseVelocity = 100 }: ParallaxProps) {
 
 export default function App() {
   return (
-    <section className="flex flex-col -space-y-4 sm:-space-y-6 md:-space-y-8 lg:-space-y-10 py-0">
+    <section className="flex flex-col -space-y-11 sm:-space-y-11 md:-space-y-16 lg:-space-y-20 py-0">
       <ParallaxText baseVelocity={-5}>Sascha fait des vidéos</ParallaxText>
       <ParallaxText baseVelocity={5}>Et de belles photos</ParallaxText>
     </section>
