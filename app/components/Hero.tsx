@@ -1,5 +1,5 @@
-import { TextGenerateEffect } from "@/components/ui/text-generate-effect"
 import { motion, useScroll, useTransform } from "framer-motion"
+import { TextRevealEffect } from "./TextReveal"
 
 const Hero = () => {
   const { scrollY } = useScroll()
@@ -38,7 +38,12 @@ const Hero = () => {
         <div className="flex flex-col md:flex-row items-center justify-between gap-12 mt-20 md:mt-0 lg:-mt-12 w-full">
           <div className="w-full lg:w-2/5 space-y-6">
             <h1 className="text-4xl md:text-6xl font-bold text-white">
-              <TextGenerateEffect words="Sascha fait des vidéos" />
+              <TextRevealEffect
+                text="Sascha fait des vidéos"
+                delay={0.15}
+                duration={0.4}
+                className="text-4xl md:text-6xl font-bold pt-4"
+              />
             </h1>
             <p className="text-lg text-gray-400">
               Capturer des moments, raconter des histoires
@@ -47,7 +52,7 @@ const Hero = () => {
 
           <motion.div
             style={{ opacity }}
-            className="w-full lg:w-3/5 relative h-[400px] md:h-[500px] lg:h-[600px]"
+            className="w-full lg:w-3/5 relative h-[400px] md:h-[500px] lg:h-[700px] lg:-mt-6"
           >
             <motion.div className="grid grid-cols-2 absolute inset-0" style={{ gap }}>
               {images.map((image, index) => (
