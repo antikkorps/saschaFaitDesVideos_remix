@@ -52,7 +52,7 @@ const Hero = () => {
 
           <motion.div
             style={{ opacity }}
-            className="w-full lg:w-3/5 relative h-[400px] md:h-[500px] lg:h-[700px] lg:-mt-6"
+            className="w-full lg:w-3/5 relative h-[400px] md:h-[500px] lg:h-[700px] lg:-mt-12"
           >
             <motion.div className="grid grid-cols-2 absolute inset-0" style={{ gap }}>
               {images.map((image, index) => (
