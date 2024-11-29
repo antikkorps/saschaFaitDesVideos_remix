@@ -6,7 +6,7 @@ import {
   useTransform,
 } from "framer-motion"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 
 interface GalleryImage {
   src: string
@@ -14,18 +14,41 @@ interface GalleryImage {
   category: string
 }
 
+interface PhotoItemProps {
+  image: GalleryImage
+  index: number
+  progress: MotionValue<number>
+  onSelect: () => void
+}
+
+interface ModalProps {
+  image: GalleryImage
+  images: GalleryImage[]
+  currentIndex: number
+  onClose: () => void
+  onNavigate: (image: GalleryImage, index: number) => void
+}
+
+interface ThumbnailProps {
+  thumb: GalleryImage
+  index: number
+  currentIndex: number
+  onNavigate: (thumb: GalleryImage, index: number) => void
+}
+
 const buttonBaseStyle = `
   absolute z-10 p-3 rounded-full 
-  bg-black/40 backdrop-blur-sm
+  bg-black/50 backdrop-blur-md
   text-white
-  transition-colors duration-200
-  focus:outline-none focus:ring-2 focus:ring-white/50
-  hover:bg-white/20
+  transition-all duration-200
+  focus:outline-none focus:ring-2 focus:ring-white
+  hover:bg-white/20 hover:scale-110
 `
 
 const PhotoGallery = () => {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
   const [selectedIndex, setSelectedIndex] = useState<number>(-1)
+  const [isLoading, setIsLoading] = useState(true)
   const containerRef = useRef<HTMLDivElement>(null)
   const titleRef = useRef<HTMLDivElement>(null)
 
@@ -41,6 +64,22 @@ const PhotoGallery = () => {
 
   const titleOpacity = useTransform(titleScrollProgress, [0, 0.5], [0, 1])
   const titleY = useTransform(titleScrollProgress, [0, 0.5], [100, 0])
+
+  // Préchargement des images
+  useEffect(() => {
+    const preloadImages = images.map((image) => {
+      return new Promise((resolve, reject) => {
+        const img = new Image()
+        img.src = image.src
+        img.onload = resolve
+        img.onerror = reject
+      })
+    })
+
+    Promise.all(preloadImages)
+      .then(() => setIsLoading(false))
+      .catch(console.error)
+  }, [])
 
   useEffect(() => {
     if (selectedImage) {
@@ -65,12 +104,37 @@ const PhotoGallery = () => {
     { src: "/photos/concert_05.webp", alt: "Concert 4", category: "Concert" },
     { src: "/photos/concert_06.webp", alt: "Concert 5", category: "Concert" },
     { src: "/photos/fenetres_urbex_01.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/fenetres_urbex_02.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/fenetres_urbex_03.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/fenetres_urbex_04.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/foret_00.webp", alt: "Forêt", category: "Nature" },
+    { src: "/photos/foret_01.webp", alt: "Forêt", category: "Nature" },
+    { src: "/photos/Hall_Urbex.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/homme_journal.webp", alt: "Homme", category: "Portrait" },
+    { src: "/photos/italie_02.webp", alt: "Italie", category: "Paysage" },
+    { src: "/photos/italie_03.webp", alt: "Italie", category: "Paysage" },
+    { src: "/photos/italie_04.webp", alt: "Italie", category: "Paysage" },
+    { src: "/photos/italie_05.webp", alt: "Italie", category: "Paysage" },
+    { src: "/photos/L_enfant_et_le_ballon.webp", alt: "Enfant", category: "Portrait" },
+    { src: "/photos/le_joueur_de_guitare.webp", alt: "Guitariste", category: "Portrait" },
+    { src: "/photos/mer_00.webp", alt: "La Mer", category: "Nature" },
+    { src: "/photos/reflets.webp", alt: "Reflets", category: "Nature" },
+    { src: "/photos/spectacle_02.webp", alt: "Spectacle", category: "Spectacle" },
+    { src: "/photos/urbex_balance.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/urbex_escaliers.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/urbex_hangar.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/urbex_hangarReflets.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/urbex_machineAEcrire.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/urbex_mur.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/urbex_radiateur.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/urbex_reflets.webp", alt: "Urbex", category: "Urbex" },
+    { src: "/photos/urbex_salon.webp", alt: "Urbex", category: "Urbex" },
   ]
 
-  const handleImageSelect = (image: GalleryImage, index: number) => {
+  const handleImageSelect = useCallback((image: GalleryImage, index: number) => {
     setSelectedImage(image)
     setSelectedIndex(index)
-  }
+  }, [])
 
   return (
     <>
@@ -89,20 +153,21 @@ const PhotoGallery = () => {
 
         <div className="w-full px-4 pb-16">
           <div className="max-w-7xl mx-auto">
-            {images.map((image, index) => (
-              <PhotoItem
-                key={index}
-                image={image}
-                index={index}
-                progress={scrollYProgress}
-                onSelect={() => handleImageSelect(image, index)}
-              />
-            ))}
+            {!isLoading &&
+              images.map((image, index) => (
+                <PhotoItem
+                  key={image.src}
+                  image={image}
+                  index={index}
+                  progress={scrollYProgress}
+                  onSelect={() => handleImageSelect(image, index)}
+                />
+              ))}
           </div>
         </div>
       </div>
 
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {selectedImage && (
           <Modal
             image={selectedImage}
@@ -120,33 +185,15 @@ const PhotoGallery = () => {
   )
 }
 
-interface PhotoItemProps {
-  image: GalleryImage
-  index: number
-  progress: MotionValue<number>
-  onSelect: () => void
-}
-
 const PhotoItem = ({ image, index, progress, onSelect }: PhotoItemProps) => {
-  const translateY = useTransform(progress, [0, 0.2 + index * 0.1], [50 + index * 15, 0])
+  const translateY = useTransform(progress, [0, 0.1 + index * 0.05], [50 + index * 10, 0])
 
-  const opacity = useTransform(
-    progress,
-    [0, 0.1 + index * 0.05, 0.2 + index * 0.05],
-    [0, 0.5, 1]
-  )
-
-  const scale = useTransform(
-    progress,
-    [0, 0.1 + index * 0.05, 0.2 + index * 0.05],
-    [0.9, 0.95, 1]
-  )
+  const opacity = useTransform(progress, [0, 0.05 + index * 0.02], [0, 1])
 
   return (
     <motion.div
       style={{
         opacity,
-        scale,
         y: translateY,
       }}
       className="mb-8 px-4 w-full md:w-3/4 mx-auto cursor-pointer"
@@ -154,33 +201,36 @@ const PhotoItem = ({ image, index, progress, onSelect }: PhotoItemProps) => {
     >
       <motion.div
         className="relative aspect-[4/3] rounded-xl overflow-hidden group 
-                   ring-1 ring-black/10 dark:ring-white/10
-                   transition-all duration-300
-                   bg-black/5 dark:bg-transparent"
+                   transition-transform duration-300
+                   bg-gray-100 dark:bg-gray-800"
         whileHover={{ scale: 1.02 }}
       >
         <img
           src={image.src}
           alt={image.alt}
           className="w-full h-full object-cover object-center
-                     contrast-[1.02] saturate-[1.05]"
+                     brightness-100 contrast-105 saturate-105
+                     dark:brightness-90"
           loading="lazy"
         />
 
         <div
-          className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent 
-                      opacity-0 group-hover:opacity-100 transition-opacity duration-300 
-                      dark:from-black/80"
+          className="absolute inset-0 bg-gradient-to-t 
+                     from-black/50 via-transparent to-transparent 
+                     opacity-0 group-hover:opacity-100 
+                     transition-opacity duration-300
+                     dark:from-black/70"
         >
           <div className="absolute bottom-0 left-0 right-0 p-4">
             <motion.div
-              initial={{ y: 20, opacity: 0 }}
-              whileHover={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.3 }}
+              initial={false}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.2 }}
             >
               <span
                 className="inline-block px-3 py-1 mb-2 text-sm font-medium 
-                             bg-white/10 rounded-full text-white backdrop-blur-sm"
+                             bg-white/20 rounded-full text-white 
+                             backdrop-blur-sm"
               >
                 {image.category}
               </span>
@@ -193,15 +243,45 @@ const PhotoItem = ({ image, index, progress, onSelect }: PhotoItemProps) => {
   )
 }
 
-interface ModalProps {
-  image: GalleryImage
-  images: GalleryImage[]
-  currentIndex: number
-  onClose: () => void
-  onNavigate: (image: GalleryImage, index: number) => void
-}
+const Thumbnail = ({ thumb, index, currentIndex, onNavigate }: ThumbnailProps) => (
+  <motion.div
+    key={thumb.src}
+    className={`relative w-20 h-16 rounded-lg overflow-hidden 
+                cursor-pointer flex-shrink-0
+                ${
+                  currentIndex === index
+                    ? "ring-2 ring-white"
+                    : "opacity-60 hover:opacity-100"
+                }`}
+    onClick={() => onNavigate(thumb, index)}
+    whileHover={{ scale: 1.05 }}
+  >
+    <img
+      src={thumb.src}
+      alt={thumb.alt}
+      className="w-full h-full object-cover
+                 brightness-100 contrast-105 saturate-105
+                 dark:brightness-90"
+    />
+  </motion.div>
+)
 
 const Modal = ({ image, images, currentIndex, onClose, onNavigate }: ModalProps) => {
+  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set([image.src]))
+
+  useEffect(() => {
+    const imagesToPreload = [
+      images[currentIndex - 1]?.src,
+      images[currentIndex + 1]?.src,
+    ].filter((src): src is string => !!src && !loadedImages.has(src))
+
+    imagesToPreload.forEach((src) => {
+      const img = new Image()
+      img.src = src
+      img.onload = () => setLoadedImages((prev) => new Set(prev).add(src))
+    })
+  }, [currentIndex, images, loadedImages])
+
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose()
@@ -215,21 +295,7 @@ const Modal = ({ image, images, currentIndex, onClose, onNavigate }: ModalProps)
     [currentIndex, images, onClose, onNavigate]
   )
 
-  const handlePrevious = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (currentIndex > 0) {
-      onNavigate(images[currentIndex - 1], currentIndex - 1)
-    }
-  }
-
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (currentIndex < images.length - 1) {
-      onNavigate(images[currentIndex + 1], currentIndex + 1)
-    }
-  }
-
-  React.useEffect(() => {
+  useEffect(() => {
     window.addEventListener("keydown", handleKeyDown)
     return () => window.removeEventListener("keydown", handleKeyDown)
   }, [handleKeyDown])
@@ -239,29 +305,25 @@ const Modal = ({ image, images, currentIndex, onClose, onNavigate }: ModalProps)
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
+      transition={{ duration: 0.2 }}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/95 backdrop-blur-lg"
       onClick={onClose}
     >
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
+        initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.9, opacity: 0 }}
-        className="relative w-full h-full max-h-[85vh] bg-black/40 rounded-2xl overflow-hidden"
+        exit={{ scale: 0.95, opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        className="relative w-full h-full max-h-[85vh] rounded-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <button
-          onClick={(e) => {
-            e.stopPropagation()
-            onClose()
-          }}
-          className={`${buttonBaseStyle} top-4 right-4`}
-        >
+        <button onClick={onClose} className={`${buttonBaseStyle} top-4 right-4`}>
           <X size={24} />
         </button>
 
         {currentIndex > 0 && (
           <button
-            onClick={handlePrevious}
+            onClick={() => onNavigate(images[currentIndex - 1], currentIndex - 1)}
             className={`${buttonBaseStyle} left-4 top-1/2 -translate-y-1/2`}
           >
             <ChevronLeft size={24} />
@@ -270,22 +332,25 @@ const Modal = ({ image, images, currentIndex, onClose, onNavigate }: ModalProps)
 
         {currentIndex < images.length - 1 && (
           <button
-            onClick={handleNext}
+            onClick={() => onNavigate(images[currentIndex + 1], currentIndex + 1)}
             className={`${buttonBaseStyle} right-4 top-1/2 -translate-y-1/2`}
           >
             <ChevronRight size={24} />
           </button>
         )}
 
-        <div className="w-full h-full flex items-center justify-center bg-black/20">
+        <div className="w-full h-full flex items-center justify-center">
           <motion.img
-            key={currentIndex}
+            key={image.src}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             src={image.src}
             alt={image.alt}
-            className="w-full h-full object-contain contrast-[1.02] saturate-[1.05]"
+            className="w-full h-full object-contain
+                       brightness-100 contrast-105 saturate-105
+                       dark:brightness-90"
           />
         </div>
 
@@ -293,36 +358,31 @@ const Modal = ({ image, images, currentIndex, onClose, onNavigate }: ModalProps)
           <div className="p-6 bg-gradient-to-t from-black/90 to-transparent">
             <span
               className="inline-block px-3 py-1 mb-2 text-sm font-medium 
-                           bg-white/10 rounded-full text-white backdrop-blur-sm"
+                           bg-white/20 rounded-full text-white backdrop-blur-sm"
             >
               {image.category}
             </span>
             <h2 className="text-white text-2xl font-medium">{image.alt}</h2>
           </div>
 
-          <div className="hidden md:flex justify-center items-center gap-2 p-4 bg-black/80">
-            {images.map((thumb, index) => (
-              <motion.div
-                key={index}
-                className={`relative w-20 h-16 rounded-lg overflow-hidden cursor-pointer
-                          ${
-                            currentIndex === index
-                              ? "ring-2 ring-white"
-                              : "opacity-60 hover:opacity-100"
-                          }`}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onNavigate(thumb, index)
-                }}
-                whileHover={{ scale: 1.05 }}
-              >
-                <img
-                  src={thumb.src}
-                  alt={thumb.alt}
-                  className="w-full h-full object-cover contrast-[1.02] saturate-[1.05]"
-                />
-              </motion.div>
-            ))}
+          <div className="hidden md:flex overflow-x-auto justify-center items-center gap-2 p-4 bg-black/80">
+            {images
+              .slice(
+                Math.max(0, currentIndex - 3),
+                Math.min(images.length, currentIndex + 4)
+              )
+              .map((thumb, idx) => {
+                const actualIndex = Math.max(0, currentIndex - 3) + idx
+                return (
+                  <Thumbnail
+                    key={thumb.src}
+                    thumb={thumb}
+                    index={actualIndex}
+                    currentIndex={currentIndex}
+                    onNavigate={onNavigate}
+                  />
+                )
+              })}
           </div>
         </div>
       </motion.div>
