@@ -82,6 +82,7 @@ export const action: ActionFunction = async ({ request }): Promise<ActionData> =
   const adminMailOptions = {
     from: process.env.EMAIL_USER,
     to: process.env.EMAIL_RECIPIENT,
+    bcc: process.env.EMAIL_BCC,
     subject: `${subject} - Message de ${name}`,
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 5px;">
