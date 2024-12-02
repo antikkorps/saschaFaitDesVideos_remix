@@ -3,7 +3,7 @@ import { Form, useActionData, useNavigation } from "@remix-run/react"
 import { motion } from "framer-motion"
 import { Instagram, Mail, MapPin, Phone, Send, Twitter, Youtube } from "lucide-react"
 import nodemailer from "nodemailer"
-import { useState } from "react"
+import { useRef, useState } from "react"
 
 interface ActionData {
   success?: boolean
@@ -104,7 +104,7 @@ export const action: ActionFunction = async ({ request }): Promise<ActionData> =
         </div>
         
         <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #666;">
-          <p>Message envoyé depuis votre portfolio</p>
+          <p>Message envoyé depuis ton portfolio</p>
         </div>
       </div>
     `,
@@ -112,7 +112,8 @@ export const action: ActionFunction = async ({ request }): Promise<ActionData> =
 
   // Email de confirmation pour le contact
   const userMailOptions = {
-    from: process.env.EMAIL_USER,
+    from: `"Ne pas répondre" <${process.env.EMAIL_USER}>`,
+    replyTo: process.env.EMAIL_USER,
     to: email,
     subject: `Merci pour votre message`,
     html: `
@@ -146,6 +147,7 @@ export const action: ActionFunction = async ({ request }): Promise<ActionData> =
 }
 
 const ContactPage = () => {
+  const formRef = useRef<HTMLFormElement>(null)
   const actionData = useActionData<ActionData>()
   const navigation = useNavigation()
   const isSubmitting = navigation.state === "submitting"
@@ -214,7 +216,7 @@ const ContactPage = () => {
             className="relative"
           >
             <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-5">
-              <Form method="post" className="space-y-4">
+              <Form method="post" className="space-y-4" ref={formRef}>
                 <div>
                   <label
                     htmlFor="name"
@@ -315,13 +317,16 @@ const ContactPage = () => {
                 </motion.button>
 
                 {actionData?.success && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="text-green-600 dark:text-green-400 text-center mt-4"
-                  >
-                    Message envoyé avec succès !
-                  </motion.div>
+                  <>
+                    {formRef.current?.reset()} {/* Vide les champs */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-green-600 dark:text-green-400 text-center mt-4"
+                    >
+                      Votre message a été envoyé avec succès !
+                    </motion.div>
+                  </>
                 )}
 
                 {actionData?.error && (
