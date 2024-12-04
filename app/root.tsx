@@ -1,6 +1,7 @@
 import type { LinksFunction } from "@remix-run/node"
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from "@remix-run/react"
 import Navbar from "./components/Navbar"
+import ScrollToTopButton from "./components/ScrollToTopButton"
 import ThemeToggle from "./components/ThemeToggle"
 import { ThemeProvider, themeScript } from "./contexts/ThemeContext"
 
@@ -38,10 +39,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
           <Navbar />
           {children}
           <ScrollRestoration />
+          <ScrollToTopButton />
           <Scripts />
-          <div className="fixed bottom-2 right-2">
-            <ThemeToggle />
-          </div>
+
+          <ThemeToggle />
         </body>
       </ThemeProvider>
     </html>

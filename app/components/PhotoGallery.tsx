@@ -196,7 +196,7 @@ const PhotoItem = ({ image, index, progress, onSelect }: PhotoItemProps) => {
         opacity,
         y: translateY,
       }}
-      className="mb-8 px-4 w-full md:w-3/4 mx-auto cursor-pointer"
+      className="mb-8 px-4 w-full md:w-3/5 mx-auto cursor-pointer"
       onClick={onSelect}
     >
       <motion.div

@@ -49,6 +49,21 @@ export const BentoGrid = ({ videos }: BentoGridProps) => {
       <div className="col-span-12 md:col-span-8 row-span-1">
         <VideoCard {...videos[5]} className="w-full h-full" />
       </div>
+
+      {/* Carte moyenne verticale */}
+      <div className="col-span-12 md:col-span-4 row-span-2">
+        <VideoCard {...videos[6]} className="w-full h-full" />
+      </div>
+
+      {/* Carte moyenne verticale */}
+      <div className="col-span-12 md:col-span-4 row-span-2">
+        <VideoCard {...videos[7]} className="w-full h-full" />
+      </div>
+
+      {/* Carte moyenne verticale */}
+      <div className="col-span-12 md:col-span-4 row-span-2">
+        <VideoCard {...videos[8]} className="w-full h-full" />
+      </div>
     </div>
   )
 }
