@@ -14,7 +14,7 @@ export const VideoCard = ({ className = "", ...video }: VideoCardProps) => {
     <>
       <motion.div
         onClick={() => setIsOpen(true)}
-        className={`group relative text-left overflow-hidden rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 cursor-pointer ${className}`}
+        className={`group relative text-left overflow-hidden rounded-xl bg-gradient-to-br from-purple-950 to-fuschsia-950 cursor-pointer ${className}`}
         whileHover={{ scale: 1.02 }}
         transition={{ duration: 0.2 }}
       >
