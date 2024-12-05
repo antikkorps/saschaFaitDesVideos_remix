@@ -21,7 +21,11 @@ const Navbar = () => {
         <div className="h-20 px-4 sm:px-8">
           <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
             {/* Logo */}
-            <Link to="/" className="flex items-center space-x-3 text-white">
+            <Link
+              to="/"
+              onClick={() => setIsOpen(false)}
+              className="flex items-center space-x-3 text-white"
+            >
               <Play className="w-6 h-6" fill="currentColor" />
               <span className="text-lg font-medium tracking-wider">
                 Sascha Fait des vidéos
