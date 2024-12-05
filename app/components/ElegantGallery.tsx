@@ -52,6 +52,14 @@ const projects: Project[] = [
     year: "2023",
     description: "La transformation subtile de la solitude en musique",
   },
+  {
+    id: 6,
+    title: "Reflets",
+    category: "Photo",
+    image: "/photos/italie_04.webp",
+    year: "2023",
+    description: "Silence et reflets, une harmonie parfaite où haut et bas se mêlent",
+  },
 ]
 
 const RefinedGallery = () => {
