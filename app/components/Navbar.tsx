@@ -9,7 +9,6 @@ const Navbar = () => {
 
   const menuItems = [
     { title: "Portfolio", href: "/portfolio" },
-    { title: "Films", href: "/films" },
     { title: "Services", href: "/services" },
     { title: "À propos", href: "/a-propos" },
     { title: "Contact", href: "/contact" },
@@ -104,8 +103,8 @@ const Navbar = () => {
               Discutons de votre projet
             </Link>
             <div className="mt-8 text-white/50 text-sm">
-              <p>contact@johndoe.com</p>
-              <p>+33 6 12 34 56 78</p>
+              <p>alexandre.pierron@gmail.com</p>
+              <p>+33 6 13 80 65 54</p>
             </div>
           </div>
         </div>
