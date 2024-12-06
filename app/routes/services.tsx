@@ -1,3 +1,4 @@
+import { Link } from "@remix-run/react"
 import { motion } from "framer-motion"
 import { Camera, PenTool, Scissors, Video } from "lucide-react"
 import PropTypes from "prop-types"
@@ -115,12 +116,12 @@ const ServicesPage = () => {
           transition={{ delay: 0.5 }}
           className="mt-12 text-center"
         >
-          <a
-            href="#contact"
+          <Link
+            to="/contact"
             className="inline-block px-8 py-3 bg-slate-600 hover:bg-slate-700 dark:bg-slate-500 dark:hover:bg-slate-600 text-white rounded-full font-medium transition-colors"
           >
             Démarrer un projet
-          </a>
+          </Link>
         </motion.div>
       </motion.div>
     </div>

@@ -157,20 +157,20 @@ const ContactPage = () => {
     {
       icon: Mail,
       label: "Email",
-      value: "contact@votresite.com",
-      href: "mailto:contact@votresite.com",
+      value: "alexandre.pierron@gmail.com",
+      href: "mailto:alexandre.pierron@gmail.com",
     },
     {
       icon: Phone,
       label: "Téléphone",
-      value: "+33 6 12 34 56 78",
-      href: "tel:+33612345678",
+      value: "+33 6 13 80 65 54",
+      href: "tel:+33613806554",
     },
     {
       icon: MapPin,
       label: "Localisation",
-      value: "Paris, France",
-      href: "#",
+      value: "Le Mans, France",
+      href: "https://www.google.fr/maps/@47.98199,0.1133002,12z?entry=ttu&g_ep=EgoyMDI0MTIwNC4wIKXMDSoASAFQAw%3D%3D",
     },
   ] as const
 
@@ -355,6 +355,7 @@ const ContactPage = () => {
                   <motion.a
                     key={info.label}
                     href={info.href}
+                    target="_blank"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="flex items-center gap-4 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
