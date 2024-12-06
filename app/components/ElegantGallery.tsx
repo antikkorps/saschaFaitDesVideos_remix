@@ -63,7 +63,7 @@ const projects: Project[] = [
 ]
 
 const RefinedGallery = () => {
-  const [selectedId, setSelectedId] = useState<number>(projects[0].id)
+  const [selectedId, setSelectedId] = useState<number | null>(projects[0].id)
   const [isHovered, setIsHovered] = useState<number | null>(null)
 
   return (
