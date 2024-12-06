@@ -1,29 +1,38 @@
 import { Link } from "@remix-run/react"
 import { AnimatePresence, motion } from "framer-motion"
 import { Camera, PenTool, Scissors, Video, X } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 const ProjectDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  const scrollPosition = useRef(0)
+
   useEffect(() => {
     if (isOpen) {
-      const scrollY = window.scrollY
-      document.body.style.position = "fixed"
-      document.body.style.top = `-${scrollY}px`
-      document.body.style.width = "100%"
+      scrollPosition.current = window.scrollY
+      document.body.style.overflow = "hidden"
+      document.body.style.height = "100vh"
+      document.body.style.paddingRight = "var(--scrollbar-width)"
     } else {
-      const scrollY = document.body.style.top
-      document.body.style.position = ""
-      document.body.style.top = ""
-      document.body.style.width = ""
-      window.scrollTo(0, parseInt(scrollY || "0") * -1)
+      document.body.style.overflow = ""
+      document.body.style.height = ""
+      document.body.style.paddingRight = ""
     }
 
     return () => {
-      document.body.style.position = ""
-      document.body.style.top = ""
-      document.body.style.width = ""
+      if (!isOpen) {
+        document.body.style.overflow = ""
+        document.body.style.height = ""
+        document.body.style.paddingRight = ""
+      }
     }
   }, [isOpen])
+
+  const handleClose = () => {
+    document.body.style.overflow = ""
+    document.body.style.height = ""
+    document.body.style.paddingRight = ""
+    onClose()
+  }
 
   return (
     <AnimatePresence>
@@ -33,7 +42,7 @@ const ProjectDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute inset-0 bg-black/30 backdrop-blur-sm"
           />
 
@@ -60,7 +69,7 @@ const ProjectDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
             {/* Header avec bouton de fermeture */}
             <div className="absolute top-0 right-0 pt-4 pr-4">
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
               >
                 <X className="w-5 h-5 text-neutral-500" />
