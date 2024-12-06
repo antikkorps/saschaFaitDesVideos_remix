@@ -22,7 +22,7 @@ const EmailInput = () => {
     <div>
       <label
         htmlFor="email"
-        className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
+        className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-2"
       >
         Email
       </label>
@@ -33,12 +33,14 @@ const EmailInput = () => {
         name="email"
         required
         onChange={(e) => setIsValid(isValidEmail(e.target.value))}
-        className={`w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 
+        className={`w-full px-4 py-3 rounded-lg bg-neutral-50 dark:bg-neutral-700 
                      border ${
-                       isValid ? "border-gray-200 dark:border-gray-600" : "border-red-500"
+                       isValid
+                         ? "border-neutral-200 dark:border-neutral-600"
+                         : "border-red-500"
                      } 
                      focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-                     text-gray-900 dark:text-white
+                     text-neutral-900 dark:text-white
                      transition-all duration-200`}
       />
       {!isValid && (
@@ -185,7 +187,7 @@ const ContactPage = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="min-h-screen w-full bg-gray-50 dark:bg-gray-900 pt-12 px-4 md:px-8"
+      className="min-h-screen w-full bg-neutral-50 dark:bg-neutral-900 pt-12 px-4 md:px-8"
     >
       <motion.div
         className="max-w-6xl mx-auto"
@@ -200,10 +202,10 @@ const ContactPage = () => {
           transition={{ delay: 0.2, duration: 0.4 }}
           className="text-center mt-12 mb-4"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-3">
+          <h1 className="text-4xl md:text-5xl font-bold text-neutral-900 dark:text-white mb-3">
             Contactez-moi
           </h1>
-          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto text-center">
+          <p className="text-neutral-600 dark:text-neutral-300 max-w-2xl mx-auto text-center">
             Envie de créer ensemble ? Je suis disponible pour vos projets photo et vidéo.
           </p>
         </motion.div>
@@ -216,12 +218,12 @@ const ContactPage = () => {
             transition={{ delay: 0.4, duration: 0.4 }}
             className="relative"
           >
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-5">
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-5">
               <Form method="post" className="space-y-4" ref={formRef}>
                 <div>
                   <label
                     htmlFor="name"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
+                    className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-2"
                   >
                     Nom complet
                   </label>
@@ -231,10 +233,10 @@ const ContactPage = () => {
                     id="name"
                     name="name"
                     required
-                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 
-                             border border-gray-200 dark:border-gray-600
+                    className="w-full px-4 py-3 rounded-lg bg-neutral-50 dark:bg-neutral-700 
+                             border border-neutral-200 dark:border-neutral-600
                              focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-                             text-gray-900 dark:text-white
+                             text-neutral-900 dark:text-white
                              transition-all duration-200"
                   />
                 </div>
@@ -244,7 +246,7 @@ const ContactPage = () => {
                 <div>
                   <label
                     htmlFor="subject"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
+                    className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-2"
                   >
                     Sujet
                   </label>
@@ -254,10 +256,10 @@ const ContactPage = () => {
                     id="subject"
                     name="subject"
                     required
-                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 
-                             border border-gray-200 dark:border-gray-600
+                    className="w-full px-4 py-3 rounded-lg bg-neutral-50 dark:bg-neutral-700 
+                             border border-neutral-200 dark:border-neutral-600
                              focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-                             text-gray-900 dark:text-white
+                             text-neutral-900 dark:text-white
                              transition-all duration-200"
                   />
                 </div>
@@ -265,7 +267,7 @@ const ContactPage = () => {
                 <div>
                   <label
                     htmlFor="message"
-                    className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2"
+                    className="block text-sm font-medium text-neutral-700 dark:text-neutral-200 mb-2"
                   >
                     Message
                   </label>
@@ -275,10 +277,10 @@ const ContactPage = () => {
                     name="message"
                     rows={4}
                     required
-                    className="w-full px-4 py-3 rounded-lg bg-gray-50 dark:bg-gray-700 
-                             border border-gray-200 dark:border-gray-600
+                    className="w-full px-4 py-3 rounded-lg bg-neutral-50 dark:bg-neutral-700 
+                             border border-neutral-200 dark:border-neutral-600
                              focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400
-                             text-gray-900 dark:text-white
+                             text-neutral-900 dark:text-white
                              transition-all duration-200 resize-none"
                   />
                 </div>
@@ -295,8 +297,8 @@ const ContactPage = () => {
                   whileTap={{ scale: 0.98 }}
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full py-4 px-6 rounded-lg bg-blue-600 hover:bg-blue-700 
-                           dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-medium
+                  className="w-full py-4 px-6 rounded-lg bg-orange-500 hover:bg-orange-700 
+                           dark:bg-orange-500 dark:hover:bg-orange-600 text-white font-medium
                            flex items-center justify-center gap-2 transition-colors duration-200
                            disabled:opacity-70 disabled:cursor-not-allowed"
                 >
@@ -346,8 +348,8 @@ const ContactPage = () => {
             transition={{ delay: 0.4, duration: 0.4 }}
             className="space-y-6"
           >
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-5">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-5">
+              <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-6">
                 Coordonnées
               </h3>
               <div className="space-y-4">
@@ -358,14 +360,14 @@ const ContactPage = () => {
                     target="_blank"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className="flex items-center gap-4 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400"
+                    className="flex items-center gap-4 text-neutral-600 dark:text-neutral-300 hover:text-blue-600 dark:hover:text-blue-400"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.5 + index * 0.1 }}
                   >
                     <info.icon className="w-5 h-5" />
                     <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                      <p className="text-sm text-neutral-500 dark:text-neutral-400">
                         {info.label}
                       </p>
                       <p className="font-medium">{info.value}</p>
@@ -375,8 +377,8 @@ const ContactPage = () => {
               </div>
             </div>
 
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-5">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">
+            <div className="bg-white dark:bg-neutral-800 rounded-2xl shadow-xl p-5">
+              <h3 className="text-xl font-semibold text-neutral-900 dark:text-white mb-6">
                 Réseaux sociaux
               </h3>
               <div className="flex flex-wrap gap-4">
@@ -386,8 +388,8 @@ const ContactPage = () => {
                     href={social.href}
                     whileHover={{ scale: 1.1, rotate: 5 }}
                     whileTap={{ scale: 0.95 }}
-                    className="p-4 rounded-full bg-gray-50 dark:bg-gray-700 
-                             text-gray-600 dark:text-gray-300
+                    className="p-4 rounded-full bg-neutral-50 dark:bg-neutral-700 
+                             text-neutral-600 dark:text-neutral-300
                              hover:bg-blue-50 dark:hover:bg-blue-900/30
                              hover:text-blue-600 dark:hover:text-blue-400
                              transition-colors duration-200"

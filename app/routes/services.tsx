@@ -1,47 +1,235 @@
 import { Link } from "@remix-run/react"
-import { motion } from "framer-motion"
-import { Camera, PenTool, Scissors, Video } from "lucide-react"
-import PropTypes from "prop-types"
+import { AnimatePresence, motion } from "framer-motion"
+import { Camera, PenTool, Scissors, Video, X } from "lucide-react"
+import { useEffect, useState } from "react"
+
+const ProjectDialog = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+  useEffect(() => {
+    if (isOpen) {
+      const scrollY = window.scrollY
+      document.body.style.position = "fixed"
+      document.body.style.top = `-${scrollY}px`
+      document.body.style.width = "100%"
+    } else {
+      const scrollY = document.body.style.top
+      document.body.style.position = ""
+      document.body.style.top = ""
+      document.body.style.width = ""
+      window.scrollTo(0, parseInt(scrollY || "0") * -1)
+    }
+
+    return () => {
+      document.body.style.position = ""
+      document.body.style.top = ""
+      document.body.style.width = ""
+    }
+  }, [isOpen])
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={onClose}
+            className="absolute inset-0 bg-black/30 backdrop-blur-sm"
+          />
+
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{
+              opacity: 1,
+              scale: 1,
+              transition: {
+                type: "spring",
+                damping: 25,
+                stiffness: 300,
+              },
+            }}
+            exit={{
+              opacity: 0,
+              scale: 0.95,
+              transition: {
+                duration: 0.2,
+              },
+            }}
+            className="relative w-[calc(100%-2rem)] md:w-full md:max-w-lg bg-white dark:bg-neutral-900 rounded-2xl shadow-xl"
+          >
+            {/* Header avec bouton de fermeture */}
+            <div className="absolute top-0 right-0 pt-4 pr-4">
+              <button
+                onClick={onClose}
+                className="p-2 rounded-full hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+              >
+                <X className="w-5 h-5 text-neutral-500" />
+              </button>
+            </div>
+
+            {/* Contenu avec padding ajusté */}
+            <div className="p-6 pt-12 md:p-8 md:pt-12">
+              <div className="text-center">
+                <motion.h2
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{
+                    y: 0,
+                    opacity: 1,
+                    transition: {
+                      delay: 0.1,
+                    },
+                  }}
+                  className="text-2xl md:text-3xl font-semibold mb-4 text-neutral-900 dark:text-white"
+                >
+                  Et si on parlait de votre projet ?
+                </motion.h2>
+
+                <motion.p
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{
+                    y: 0,
+                    opacity: 1,
+                    transition: {
+                      delay: 0.2,
+                    },
+                  }}
+                  className="text-neutral-600 dark:text-neutral-400 mb-6"
+                >
+                  Je suis là pour répondre à vos questions et vous accompagner dans la
+                  réalisation de votre projet.
+                </motion.p>
+
+                <motion.div
+                  initial={{ y: 10, opacity: 0 }}
+                  animate={{
+                    y: 0,
+                    opacity: 1,
+                    transition: {
+                      delay: 0.3,
+                    },
+                  }}
+                >
+                  <Link
+                    to="/contact"
+                    className="block w-full py-4 px-6 bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:hover:bg-neutral-100 text-white dark:text-neutral-900 rounded-full font-medium transition-colors text-center"
+                  >
+                    Commencer la discussion
+                  </Link>
+                </motion.div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
+  )
+}
 
 const ServiceCard = ({
   icon: Icon,
   title,
   description,
   delay,
+  index,
+  onCardClick,
 }: {
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>
   title: string
   description: string
   delay: number
+  index: number
+  onCardClick: () => void
 }) => {
+  const [isHovered, setIsHovered] = useState(false)
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay }}
-      className="flex flex-col h-full p-6 rounded-xl bg-white dark:bg-slate-800 shadow-lg hover:shadow-xl transition-shadow"
+      className="group relative h-full cursor-pointer"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onClick={onCardClick}
     >
-      <div className="flex items-center mb-4">
-        <div className="p-3 rounded-full bg-neutral-100 dark:bg-neutral-900/50">
-          <Icon className="w-6 h-6 text-neutral-600 dark:text-neutral-400" />
+      <motion.div
+        className="absolute inset-0 rounded-2xl bg-gradient-to-br from-neutral-900 to-neutral-800 dark:from-neutral-800 dark:to-neutral-700"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{
+          opacity: isHovered ? 1 : 0,
+          scale: isHovered ? 1 : 0.8,
+        }}
+        transition={{ duration: 0.3 }}
+      />
+
+      <div className="relative flex flex-col h-full p-8 rounded-2xl bg-white dark:bg-neutral-900 group-hover:bg-opacity-0 dark:group-hover:bg-opacity-0 transition-all duration-300">
+        <motion.div
+          className="flex items-center"
+          animate={{
+            y: isHovered ? -10 : 0,
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          <div className="p-4 rounded-2xl bg-neutral-100 dark:bg-neutral-800 group-hover:bg-neutral-800 dark:group-hover:bg-neutral-700 transition-colors">
+            <Icon className="w-8 h-8 text-neutral-600 dark:text-neutral-400 group-hover:text-white transition-colors" />
+          </div>
+          <h3 className="ml-4 text-2xl font-semibold text-neutral-800 dark:text-neutral-200 group-hover:text-white transition-colors">
+            {title}
+          </h3>
+        </motion.div>
+
+        <motion.div
+          className="mt-6 space-y-4"
+          animate={{
+            y: isHovered ? -10 : 0,
+          }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+        >
+          <p className="text-lg text-neutral-600 dark:text-neutral-400 group-hover:text-neutral-200 transition-colors">
+            {description}
+          </p>
+
+          <motion.div
+            initial={{ width: 0 }}
+            animate={{ width: isHovered ? "100%" : "0%" }}
+            className="h-px bg-white/30"
+            transition={{ duration: 0.3 }}
+          />
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isHovered ? 1 : 0 }}
+            className="pt-2"
+          >
+            <Link
+              to="/contact"
+              className="inline-flex items-center text-white group-hover:text-white/90"
+              onClick={(e) => e.stopPropagation()} // Empêche le clic de la carte
+            >
+              Me contacter
+              <motion.span
+                initial={{ x: 0 }}
+                animate={{ x: isHovered ? 5 : 0 }}
+                transition={{ duration: 0.3 }}
+                className="ml-2"
+              >
+                →
+              </motion.span>
+            </Link>
+          </motion.div>
+        </motion.div>
+
+        <div className="absolute bottom-4 right-4 text-6xl font-bold text-neutral-200/10 dark:text-neutral-700/20 group-hover:text-white/5">
+          {(index + 1).toString().padStart(2, "0")}
         </div>
-        <h3 className="ml-4 text-xl font-semibold text-gray-800 dark:text-gray-100">
-          {title}
-        </h3>
       </div>
-      <p className="mt-2 text-gray-600 dark:text-gray-300">{description}</p>
     </motion.div>
   )
 }
 
-ServiceCard.propTypes = {
-  icon: PropTypes.elementType.isRequired,
-  title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
-  delay: PropTypes.number.isRequired,
-}
-
 const ServicesPage = () => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+
   const services = [
     {
       icon: Camera,
@@ -74,31 +262,44 @@ const ServicesPage = () => {
   ]
 
   return (
-    <div className="min-h-screen p-4 md:p-8 bg-gray-50 dark:bg-neutral-900">
+    <div className="min-h-screen px-4 py-16 md:py-24 md:px-8 bg-neutral-50 dark:bg-neutral-950">
       <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-4xl mx-auto"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="max-w-6xl mx-auto"
       >
-        <div className="text-center mb-8">
-          <motion.h1
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white"
+        <div className="text-center mb-16 md:mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-block mb-4 px-6 py-2 rounded-full bg-neutral-200 dark:bg-neutral-800/50"
           >
-            Mes Services
+            <span className="text-neutral-600 dark:text-neutral-400">
+              Services professionnels
+            </span>
+          </motion.div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-4xl md:text-6xl font-bold mb-6 text-neutral-900 dark:text-white"
+          >
+            Expertise visuelle
           </motion.h1>
+
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-gray-600 dark:text-gray-300 md:text-3xl"
+            className="max-w-2xl mx-auto text-lg md:text-xl text-neutral-600 dark:text-neutral-400"
           >
             De la capture à la retouche, je vous accompagne dans tous vos projets visuels
+            avec une approche créative et professionnelle
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {services.map((service, index) => (
             <ServiceCard
               key={index}
@@ -106,24 +307,14 @@ const ServicesPage = () => {
               title={service.title}
               description={service.description}
               delay={service.delay}
+              index={index}
+              onCardClick={() => setIsDialogOpen(true)}
             />
           ))}
         </div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mt-12 text-center"
-        >
-          <Link
-            to="/contact"
-            className="inline-block px-8 py-3 bg-slate-600 hover:bg-slate-700 dark:bg-slate-500 dark:hover:bg-slate-600 text-white rounded-full font-medium transition-colors"
-          >
-            Démarrer un projet
-          </Link>
-        </motion.div>
       </motion.div>
+
+      <ProjectDialog isOpen={isDialogOpen} onClose={() => setIsDialogOpen(false)} />
     </div>
   )
 }
