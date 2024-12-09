@@ -109,6 +109,11 @@ const Navbar = () => {
             <div className="mt-8 text-white/50 text-sm">
               <p>alexandre.pierron@gmail.com</p>
               <p>+33 6 13 80 65 54</p>
+              <p className="text-xs">
+                <Link to="/legal" onClick={() => setIsOpen(false)}>
+                  Mentions Légales
+                </Link>
+              </p>
             </div>
           </div>
         </div>

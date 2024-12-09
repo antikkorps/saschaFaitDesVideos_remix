@@ -1,7 +1,7 @@
 import { type ActionFunction } from "@remix-run/node"
 import { Form, useActionData, useNavigation } from "@remix-run/react"
 import { motion } from "framer-motion"
-import { Instagram, Mail, MapPin, Phone, Send, Twitter, Youtube } from "lucide-react"
+import { Instagram, Mail, MapPin, Phone, Send, Youtube } from "lucide-react"
 import nodemailer from "nodemailer"
 import { useRef, useState } from "react"
 
@@ -177,9 +177,12 @@ const ContactPage = () => {
   ] as const
 
   const socials = [
-    { icon: Instagram, label: "Instagram", href: "#" },
-    { icon: Twitter, label: "Twitter", href: "#" },
-    { icon: Youtube, label: "Youtube", href: "#" },
+    {
+      icon: Instagram,
+      label: "Instagram",
+      href: "https://www.instagram.com/i_m_sascha/",
+    },
+    { icon: Youtube, label: "Youtube", href: "https://www.youtube.com/user/alescandrep" },
   ] as const
 
   return (
