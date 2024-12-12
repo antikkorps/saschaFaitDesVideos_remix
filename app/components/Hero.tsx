@@ -8,19 +8,23 @@ const Hero = () => {
   const gap = useTransform(scrollY, [0, 300], [16, 80])
   const translate = useTransform(scrollY, [0, 300], [0, 150])
 
+  const translateHommeJournal = useTransform(scrollY, [0, 300], [0, -150])
+  const translateItalieTop = useTransform(scrollY, [0, 300], [0, -100])
+
   const images = [
     {
       src: "/photos/homme_journal.webp",
       alt: "Photo 1",
       className: "col-span-1 row-span-2",
-      translateX: translate,
+      translateX: translateHommeJournal,
       floatOffset: 0,
+      isHommePerson: true,
     },
     {
       src: "/photos/italie_02.webp",
       alt: "Photo 2",
       className: "col-span-1",
-      translateX: translate,
+      translateX: translateItalieTop,
       floatOffset: 2,
     },
     {
@@ -78,12 +82,25 @@ const Hero = () => {
                     x: image.translateX,
                   }}
                 >
-                  <img
-                    src={image.src}
-                    alt={image.alt}
-                    className="w-full h-full object-cover"
-                    loading="eager"
-                  />
+                  {image.isHommePerson ? (
+                    <div className="absolute inset-0 overflow-hidden">
+                      <div className="w-[300%] h-full relative left-[-200%]">
+                        <img
+                          src={image.src}
+                          alt={image.alt}
+                          className="absolute top-0 left-0 w-full h-full object-cover"
+                          loading="eager"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <img
+                      src={image.src}
+                      alt={image.alt}
+                      className="w-full h-full object-cover"
+                      loading="eager"
+                    />
+                  )}
                 </motion.div>
               ))}
             </motion.div>
