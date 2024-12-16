@@ -15,6 +15,16 @@ export function isValidEmail(email: string) {
   return regex.test(email)
 }
 
+export function sanitizeInput(input: string) {
+  const sanitized = input
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;")
+  return sanitized
+}
+
 const EmailInput = () => {
   const [isValid, setIsValid] = useState(true)
 
@@ -85,10 +95,10 @@ export const action: ActionFunction = async ({ request }): Promise<ActionData> =
   const honeypot = formData.get("honeypot")?.toString()
   const website = formData.get("website")?.toString()
   const timestamp = formData.get("timestamp")?.toString()
-  const name = formData.get("name")?.toString()
+  const name = sanitizeInput(formData.get("name")?.toString() || "")
   const email = formData.get("email")?.toString()
-  const subject = formData.get("subject")?.toString()
-  const message = formData.get("message")?.toString()
+  const subject = sanitizeInput(formData.get("subject")?.toString() || "")
+  const message = sanitizeInput(formData.get("message")?.toString() || "")
 
   if (honeypot || website || !timestamp || Date.now() - Number(timestamp) < 5000) {
     return { error: "Une erreur est survenue" }
