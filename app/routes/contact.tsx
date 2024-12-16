@@ -3,7 +3,7 @@ import { Form, useActionData, useNavigation } from "@remix-run/react"
 import { motion } from "framer-motion"
 import { Instagram, Mail, MapPin, Phone, Send, Youtube } from "lucide-react"
 import nodemailer from "nodemailer"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface ActionData {
   success?: boolean
@@ -11,8 +11,8 @@ interface ActionData {
 }
 
 export function isValidEmail(email: string) {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  return emailRegex.test(email)
+  const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/
+  return regex.test(email)
 }
 
 const EmailInput = () => {
@@ -56,21 +56,51 @@ const EmailInput = () => {
   )
 }
 
+const spamWords = [
+  "crypto",
+  "bitcoin",
+  "casino",
+  "viagra",
+  "forex",
+  "investment",
+  "lottery",
+  "prize",
+  "winner",
+].join("|")
+
+function validateMessage(message: string) {
+  // Vérifiez la longueur et le contenu
+  if (message.length < 10 || message.length > 1000) return false
+  if (message.includes("http") || message.includes("www.")) return false
+  const containsSpamWords = new RegExp(`\\b(${spamWords})\\b`, "i").test(message)
+  const tooManyUrls = (message.match(/\b(?:https?|ftp):\/\/|www\./g) || []).length > 0
+  const tooManyEmails =
+    (message.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g) || []).length > 1
+
+  return !(containsSpamWords || tooManyUrls || tooManyEmails)
+}
+
 export const action: ActionFunction = async ({ request }): Promise<ActionData> => {
   const formData = await request.formData()
   const honeypot = formData.get("honeypot")?.toString()
+  const website = formData.get("website")?.toString()
+  const timestamp = formData.get("timestamp")?.toString()
   const name = formData.get("name")?.toString()
   const email = formData.get("email")?.toString()
   const subject = formData.get("subject")?.toString()
   const message = formData.get("message")?.toString()
 
-  if (honeypot) {
+  if (honeypot || website || !timestamp || Date.now() - Number(timestamp) < 5000) {
     return { error: "Une erreur est survenue" }
   }
 
   // Validation email
   if (!email || !isValidEmail(email)) {
     return { error: "Adresse email invalide" }
+  }
+
+  if (!validateMessage(message!)) {
+    return { error: "Message invalide" }
   }
 
   const transporter = nodemailer.createTransport({
@@ -155,6 +185,15 @@ const ContactPage = () => {
   const navigation = useNavigation()
   const isSubmitting = navigation.state === "submitting"
 
+  useEffect(() => {
+    const timestampInput = document.querySelector(
+      'input[name="timestamp"]'
+    ) as HTMLInputElement
+    if (timestampInput) {
+      timestampInput.value = Date.now().toString()
+    }
+  }, [])
+
   const contactInfo = [
     {
       icon: Mail,
@@ -184,6 +223,12 @@ const ContactPage = () => {
     },
     { icon: Youtube, label: "Youtube", href: "https://www.youtube.com/user/alescandrep" },
   ] as const
+
+  useEffect(() => {
+    if (actionData?.success) {
+      formRef.current?.reset()
+    }
+  }, [actionData?.success])
 
   return (
     <motion.div
@@ -295,6 +340,18 @@ const ContactPage = () => {
                   tabIndex={-1}
                   autoComplete="off"
                 />
+
+                {/* Nouveau champ honeypot */}
+                <input
+                  type="text"
+                  name="website"
+                  style={{ display: "none" }}
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+
+                {/* Champ timestamp */}
+                <input type="hidden" name="timestamp" value="" />
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -324,7 +381,7 @@ const ContactPage = () => {
 
                 {actionData?.success && (
                   <>
-                    {formRef.current?.reset()} {/* Vide les champs */}
+                    {/* Déplacer le reset dans un useEffect */}
                     <motion.div
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
